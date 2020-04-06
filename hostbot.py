@@ -41,7 +41,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
         await ctx.send(f"I don't recognise this command. Use `{bot.command_prefix}help` for all the commands")
     elif isinstance(error, commands.errors.NotOwner):
-        await ctx.send("That command is owner only")
+        await ctx.send("This command is owner only")
     elif isinstance(error, commands.errors.BotMissingPermissions):
         await ctx.send(f"I'm missing the following permission(s) to execute this command: {', '.join(error.missing_perms)}")
     elif isinstance(error, commands.errors.MissingPermissions):
@@ -296,7 +296,7 @@ scoreChannel = bot.get_channel(614770687521062928)
 @commands.has_role("Host")
 async def game(ctx):
     if ctx.invoked_subcommand is None:
-        ctx.author.send("Invalid subcommand")
+        await ctx.author.send("Invalid subcommand")
 
 inviteActive = False
 inviteTimer = None
