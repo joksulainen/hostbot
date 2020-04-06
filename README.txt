@@ -1,4 +1,4 @@
-This is hobby work for myself only, I will not add new contributors to this repository.
+This is hobby work for myself only, I will not add new contributors or collaborators to this repository.
 
 Copyright (C) 2020 joksulainen
 
