@@ -298,6 +298,7 @@ async def game(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.author.send("Invalid subcommand")
 
+
 inviteActive = False
 inviteTimer = None
 
@@ -367,6 +368,7 @@ async def songcheck(ctx, name="N/A", pack="N/A", difficulty="N/A"):
     await message.add_reaction(":owned:567204206142816273")
     await message.add_reaction(":not_owned:567204277148188686")
     await logChannel.send(f"[Lobby 3 @ {logTime}] Asked for ownership of the following song:\nName: {name}\nPack: {pack}\nDifficulty: {difficulty}")
+
 
 roundActive = False
 roundTimer = None
