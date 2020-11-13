@@ -28,7 +28,7 @@ def delete():
 statuses = ["with hosting stuff", "with chemicals", "with joksulainen", "with the boys", "with itself", "with nothing", "joksuBOT.exe",
             "joksuBOT - Playing joksuBOT - Playing joksuBOT"]
 
-logTime = time.strftime("%H:%M:%S +0000", time.gmtime())
+logTime = time.strftime("%D %H:%M:%S UTC", time.gmtime())
 appInfo = None
 logChannel = None
 joinChannel = None
@@ -51,6 +51,7 @@ async def on_ready():
     joinReaction = bot.get_emoji(567204134441320451)
     discordServer = bot.get_guild(566111034063192085)
     playerRole = discordServer.get_role(614770824867479556)
+    # Just incase, have the variables print out their types
     print(f"logChannel: {type(logChannel)}")
     print(f"joinChannel: {type(joinChannel)}")
     print(f"lobbyChannel: {type(lobbyChannel)}")
@@ -139,7 +140,7 @@ async def help(ctx, category="general"):
         e = discord.Embed(title="Game management commands (Host only)", description=helpdescription, colour=COLOR)
         e.set_footer(text=f"Created by {appInfo.owner.display_name}#{appInfo.owner.discriminator}", icon_url=appInfo.owner.avatar_url)
         e.add_field(name="game", value="Base command", inline=False)
-        e.add_field(name="-createinvite (num: 0-5) [minutes]", value="Creates an invite with the chosen difficulty", inline=False)
+        e.add_field(name="-createinvite \"difficulty\" [minutes]", value="Creates an invite with custom difficulty string", inline=False)
         e.add_field(name="-cancelinvite", value="Cancels the ongoing invite", inline=False)
         e.add_field(name="-songcheck \"(name)\" \"(pack)\" \"(difficulty)\"", value="Sends a check message for song owned", inline=False)
         e.add_field(name="-startround (time in sec)", value="Starts a round", inline=False)
@@ -194,7 +195,7 @@ async def rng(ctx, maximum=1, minimum=0):
 async def customstatus(ctx, *, string: str):
     await bot.change_presence(activity=discord.Game(name=string))
     await ctx.send(f"Changed status to \"{string}\"")
-    await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has changed this bots status to \"{string}\"")
+    await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has changed this bot's status to \"{string}\"")
 
 
 @bot.command()
@@ -204,7 +205,7 @@ async def randomstatus(ctx, showCount=""):
     else:
         await bot.change_presence(activity=discord.Game(name=random.choice(statuses)))
         await ctx.send("Changed status to a random one from the list")
-        await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has randomized this bots status")
+        await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has randomized this bot's status")
 
 
 @delete()
@@ -258,7 +259,7 @@ async def current(ctx):
     if user in idlist:
         await ctx.author.send(f"The current Arcaea ID for your account is `{idlist[user]}`")
     else:
-        await ctx.author.send("You do not have an Arcaea ID for this account yet. Use `j.id add (Arcaea ID)` to add your ID")
+        await ctx.author.send(f"You do not have an Arcaea ID for this account yet. Use `{bot.command_prefix}id add (Arcaea ID)` to add your ID")
 
 
 @bot.command()
@@ -302,7 +303,7 @@ async def praise(ctx, character="", showCount=""):
 
 @delete()
 @bot.group()
-@commands.has_role("Host")
+@commands.has_role(566124515202170890)
 async def game(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.author.send("Invalid subcommand")
@@ -310,39 +311,25 @@ async def game(ctx):
 inviteActive = False
 inviteTimer = None
 
-async def inviteLogic(ctx, num, time: float):
+async def inviteLogic(ctx, difficulty: str, time: float):
     global inviteActive
     inviteActive = True
     minutesec = time*60
-    if num == "0":
-        difficulty = "[CUSTOM]"
-    elif num == "1":
-        difficulty = "[EASY]"
-    elif num == "2":
-        difficulty = "[NORMAL]"
-    elif num == "3":
-        difficulty = "[HARD]"
-    elif num == "4":
-        difficulty = "[100 MEMES]"
-    elif num == "5":
-        difficulty = "[500 MEMES]"
-    else:
-        inviteActive = False
-        return await ctx.author.send("Specify a valid difficulty")
     message = await joinChannel.send(f"A game of {difficulty} Arcaea Rhythm Royale is about to start!\nReact with <:join_game:567204134441320451> to join!\n"
                                      f"Invite expires in {str(time)} minutes.\n@everyone")
     await message.add_reaction(":join_game:567204134441320451")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Created an invite with a length of {str(time/2)} minutes")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Created an invite with a length of {str(time/2)} minutes")
     await sleep(minutesec/2)
     await joinChannel.send(f"Invite expires in {str(time/2)} minutes.")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Invite expires in {str(time/2)} minutes")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Invite expires in {str(time/2)} minutes")
     await sleep(minutesec/2)
     await joinChannel.send("Invite expired.")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Invite expired")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Invite expired")
     reactions = (await ctx.get_message(message.id)).reactions  # Retrieve reactions
     reaction = [re for re in reactions if re.emoji == joinReaction][0]  # Get reaction instance to retrieve users
     # Retrieve a list of users that reacted with the specified reaction, excluding bot
     users = [u for u in (await reaction.users().flatten()) if not u.bot]
+    # Guild instance has been defined on_ready()
     player = playerRole  # Get role instance to be added
     for user in users:  # Assign the role to those users
         await user.add_roles(player)
@@ -366,7 +353,7 @@ async def cancelinvite(ctx):
     inviteTimer.cancel()
     inviteActive = False
     await joinChannel.send("Invite has been canceled")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Invite canceled")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Invite canceled")
 
 
 @game.command()
@@ -375,7 +362,7 @@ async def songcheck(ctx, name="N/A", pack="N/A", difficulty="N/A"):
     message = await lobbyChannel.send(f"Do you have the following song unlocked? <@&614770824867479556>\nName: {name}\nPack: {pack}\nDifficulty: {difficulty}")
     await message.add_reaction(":owned:567204206142816273")
     await message.add_reaction(":not_owned:567204277148188686")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Asked for ownership of the following song:\nName: {name}\nPack: {pack}\nDifficulty: {difficulty}")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Asked for ownership of the following song:\nName: {name}\nPack: {pack}\nDifficulty: {difficulty}")
 
 roundActive = False
 roundTimer = None
@@ -385,7 +372,7 @@ async def roundLogic(time: int):
     roundActive = True
     minutes = time // 60
     seconds = time % 60
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Begin round triggered")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Begin round triggered")
     await lobbyChannel.send("Round starts in 15 seconds")
     await sleep(10)
     await lobbyChannel.send("Round starts in 5 seconds")
@@ -395,15 +382,15 @@ async def roundLogic(time: int):
     else:
         await lobbyChannel.send(f"Finish chart in {minutes}:0{seconds}. Good luck! <@&614770824867479556>")
     await scoreChannel.send("-==========BEGIN==========-")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Round begun")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Round begun")
     await sleep(time/2)
     await lobbyChannel.send("Half time")
     await scoreChannel.send("-========HALF TIME========-")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Half time")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Half time")
     await sleep(time/2)
     await lobbyChannel.send("Round is over. Verifying scores... <@&614770824867479556>")
     await scoreChannel.send("-===========END===========-")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Round ended")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Round ended")
     roundActive = False
 
 @game.command()
@@ -420,9 +407,9 @@ async def cancelround(ctx):
         return await ctx.author.send("There is no round currently active")
     roundTimer.cancel()
     roundActive = False
-    await lobbyChannel.send("Round has been canceled <@&614770824867479556>")
-    await scoreChannel.send("-=========CANCELED========-")
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Round canceled")
+    await lobbyChannel.send("Round has been cancelled <@&614770824867479556>")
+    await scoreChannel.send("-========CANCELLED========-")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Round cancelled")
 
 @game.command()
 @commands.bot_has_guild_permissions(manage_roles=True)
@@ -432,7 +419,7 @@ async def removeplayers(ctx):
     users = player.members  # Get all users with the role
     for user in users:  # Remove the role
         await user.remove_roles(player)
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Removed Player 3 role from existing role holders")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Removed Player 2 role from existing role holders")
 
 
 bot.run(token)
