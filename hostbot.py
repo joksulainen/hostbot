@@ -29,14 +29,6 @@ statuses = ["with hosting stuff", "with chemicals", "with joksulainen", "with th
             "joksuBOT - Playing joksuBOT - Playing joksuBOT"]
 
 logTime = time.strftime("%D %H:%M:%S UTC", time.gmtime())
-appInfo = None
-logChannel = None
-joinChannel = None
-lobbyChannel = None
-scoreChannel = None
-joinReaction = None
-discordServer = None
-playerRole = None
 
 @bot.event
 async def on_ready():
@@ -340,11 +332,11 @@ async def inviteLogic(ctx, difficulty: str, time: float):
 @game.command()
 @commands.bot_has_guild_permissions(manage_roles=True)
 @commands.bot_has_permissions(add_reactions=True)
-async def createinvite(ctx, num="", time: float = 10):
+async def createinvite(ctx, difficulty: str, time: float = 10):
     global inviteTimer, inviteActive
     if inviteActive:
         return await ctx.author.send("An existing invite is currently active")
-    inviteTimer = bot.loop.create_task(inviteLogic(ctx, num, time))
+    inviteTimer = bot.loop.create_task(inviteLogic(ctx, difficulty, time))
 
 @game.command()
 async def cancelinvite(ctx):
