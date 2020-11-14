@@ -69,7 +69,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.errors.CommandInvokeError):
         await ctx.send("Something went wrong while invoking this command")
     elif isinstance(error, commands.errors.CommandOnCooldown):
-        await ctx.send(f"You are on cooldown for this command. Try again in {round(error.retry_after, 1)} seconds")
+        await ctx.send(f"Cooldown is active. Try again in {round(error.retry_after, 1)} seconds")
     elif isinstance(error, commands.errors.NoPrivateMessage):
         await ctx.author.send("This command can't be used in private messages")
     elif isinstance(error, commands.errors.MissingAnyRole):
@@ -187,7 +187,7 @@ async def rng(ctx, maximum=1, minimum=0):
 async def customstatus(ctx, *, string: str):
     await bot.change_presence(activity=discord.Game(name=string))
     await ctx.send(f"Changed status to \"{string}\"")
-    await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has changed this bot's status to \"{string}\"")
+    await logChannel.send(f"[Bot @ {logTime}] {ctx.author} has changed this bot's status to \"{string}\"")
 
 
 @bot.command()
@@ -197,7 +197,7 @@ async def randomstatus(ctx, showCount=""):
     else:
         await bot.change_presence(activity=discord.Game(name=random.choice(statuses)))
         await ctx.send("Changed status to a random one from the list")
-        await logChannel.send(f"[Bot @ {logTime}] {ctx.user} has randomized this bot's status")
+        await logChannel.send(f"[Bot @ {logTime}] {ctx.author} has randomized this bot's status")
 
 
 @delete()
@@ -322,10 +322,9 @@ async def inviteLogic(ctx, difficulty: str, time: float):
     reaction = [re for re in reactions if re.emoji == joinReaction][0]  # Get reaction instance to retrieve users
     # Retrieve a list of users that reacted with the specified reaction, excluding bot
     users = [u for u in (await reaction.users().flatten()) if not u.bot]
-    # Guild instance has been defined on_ready()
-    player = playerRole  # Get role instance to be added
+    # Guild and role instance have been defined in on_ready event
     for user in users:  # Assign the role to those users
-        await user.add_roles(player)
+        await user.add_roles(playerRole)
     await logChannel.send(f"[Lobby 3 @ {logTime}] Gave all participants Player 3 role")
     inviteActive = False
 
@@ -408,11 +407,9 @@ async def cancelround(ctx):
 @game.command()
 @commands.bot_has_guild_permissions(manage_roles=True)
 async def removeplayers(ctx):
-    guild = bot.get_guild(discordServer)  # Get guild instance to retrieve role
-    player = guild.get_role(playerRole)  # Get role instance to be added
-    users = player.members  # Get all users with the role
+    users = playerRole.members  # Get all users with the role
     for user in users:  # Remove the role
-        await user.remove_roles(player)
+        await user.remove_roles(playerRole)
     await logChannel.send(f"[Lobby 2 @ {logTime}] Removed Player 2 role from existing role holders")
 
 

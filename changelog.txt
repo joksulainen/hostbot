@@ -1,3 +1,6 @@
+__**14.11.2020**__
+The bot has come back into action at full force!
+Hopefully I'm not going to be lazy again
 __**6.4.2020**__
 A bunch of bug fixes
 Game management commands are now 1 command
