@@ -28,7 +28,7 @@ def delete():
 statuses = ["with hosting stuff", "with chemicals", "with joksulainen", "with the boys", "with itself", "with nothing", "joksuBOT.exe",
             "joksuBOT - Playing joksuBOT - Playing joksuBOT"]
 
-logTime = time.strftime("%D %H:%M:%S UTC", time.gmtime())
+logTime = time.strftime("%d.%m.%Y %H:%M:%S UTC", time.gmtime())
 
 @bot.event
 async def on_ready():
