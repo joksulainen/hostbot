@@ -325,7 +325,7 @@ async def inviteLogic(ctx, difficulty: str, time: float):
     # Guild and role instance have been defined in on_ready event
     for user in users:  # Assign the role to those users
         await user.add_roles(playerRole)
-    await logChannel.send(f"[Lobby 3 @ {logTime}] Gave all participants Player 3 role")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Gave all participants Player 2     role")
     inviteActive = False
 
 @game.command()
