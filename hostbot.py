@@ -137,7 +137,7 @@ async def help(ctx, category="general"):
         e.add_field(name="-songcheck \"(name)\" \"(pack)\" \"(difficulty)\"", value="Sends a check message for song owned", inline=False)
         e.add_field(name="-startround (time in sec)", value="Starts a round", inline=False)
         e.add_field(name="-cancelround", value="Cancels the ongoing round", inline=False)
-        e.add_field(name="-removeplayers", value="Removes Player 3 role from those who still have it", inline=False)
+        e.add_field(name="-removeplayers", value="Removes Player 2 role from those who still have it", inline=False)
         await ctx.send(embed=e)
     else:
         await ctx.send(f"Invalid category\nValid categories:\n`{', '.join(helpcategories)}`")
