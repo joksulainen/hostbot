@@ -1,11 +1,15 @@
 import time
-from asyncio import sleep
 import random
 import json
 import os
+from asyncio import sleep
 
 import discord
 from discord.ext import commands
+
+# Import cogs for commands
+import cogs.general
+import cogs.game
 
 tokenFile = open("token.txt", "r")
 token = tokenFile.read()
@@ -37,6 +41,7 @@ async def on_ready():
     global appInfo, logChannel, joinChannel, lobbyChannel, scoreChannel, joinReaction, discordServer, playerRole
     appInfo = await bot.application_info()
     logChannel = bot.get_channel(631136267366694913)
+    # FOR DELETION
     joinChannel = bot.get_channel(614731761875943434)
     lobbyChannel = bot.get_channel(614731837587324929)
     scoreChannel = bot.get_channel(614770687521062928)
@@ -51,6 +56,9 @@ async def on_ready():
     print(f"joinReaction: {type(joinReaction)}")
     print(f"discordServer: {type(discordServer)}")
     print(f"playerRole: {type(playerRole)}")
+    # Register cogs
+    # bot.add_cog(cogs.general.General(bot, appInfo, logChannel, statuses, idlist, logTime))
+    # bot.add_cog(cogs.game.Game(bot, logChannel, logTime))
 
 
 # Error handler
@@ -102,6 +110,7 @@ async def on_message(message):
         await bot.process_commands(message)
 
 
+# FOR DELETION
 # Loads idlist.json into idlist variable so the bot can work with it
 idlistFile = open("idlist.json", "r")
 idlist = json.load(idlistFile)
@@ -325,7 +334,7 @@ async def inviteLogic(ctx, difficulty: str, time: float):
     # Guild and role instance have been defined in on_ready event
     for user in users:  # Assign the role to those users
         await user.add_roles(playerRole)
-    await logChannel.send(f"[Lobby 2 @ {logTime}] Gave all participants Player 2     role")
+    await logChannel.send(f"[Lobby 2 @ {logTime}] Gave all participants Player 2 role")
     inviteActive = False
 
 @game.command()
