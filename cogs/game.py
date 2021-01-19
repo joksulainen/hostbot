@@ -8,7 +8,7 @@ import discord
 from discord.ext import commands
 
 # Dependency on idlist variable
-import general
+# import cogs.general
 
 # Define automatic command deletion
 # Credits to DJ#4806
