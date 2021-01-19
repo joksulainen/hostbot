@@ -13,7 +13,7 @@ import general
 # Define automatic command deletion
 # Credits to DJ#4806
 def delete():
-    async def predicate(self, ctx):
+    async def predicate(ctx):
         await ctx.message.delete()
         return True
     return commands.check(predicate)
@@ -46,8 +46,8 @@ class Game(commands.Cog):
         global inviteActive
         inviteActive = True
         minutesec = time*60
-        message = await self.joinChannel.send(f"A game of {difficulty} Arcaea Rhythm Royale is about to start!\nReact with <:join_game:567204134441320451> to join!\n"
-                                              f"Invite expires in {str(time)} minutes.\n@everyone")
+        message = await self.joinChannel.send(f"""A game of {difficulty} Arcaea Rhythm Royale is about to start!\nReact with <:join_game:567204134441320451> to join!\n
+                                              Invite expires in {str(time)} minutes.\n@everyone""")
         await message.add_reaction(":join_game:567204134441320451")
         await self.logChannel.send(f"[Lobby 2 @ {self.logTime}] Created an invite with a length of {str(time/2)} minutes")
         await sleep(minutesec/2)

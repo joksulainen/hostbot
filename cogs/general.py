@@ -10,7 +10,7 @@ from discord.ext import commands
 # Define automatic command deletion
 # Credits to DJ#4806
 def delete():
-    async def predicate(self, ctx):
+    async def predicate(ctx):
         await ctx.message.delete()
         return True
     return commands.check(predicate)
@@ -64,6 +64,7 @@ class General(commands.Cog):
             await ctx.send(f"Invalid category\nValid categories:\n`{', '.join(self.helpcategories)}`")
 
 
+    @delete()
     @commands.command()
     async def info(self, ctx):
         e = discord.Embed(title=f"{self.appInfo.name} | A bot that is made for hosting games", description=f"{self.appInfo.owner.display_name} uses this bot to host games", colour=self.COLOR)
@@ -99,8 +100,6 @@ class General(commands.Cog):
     @commands.command()
     async def rng(self, ctx, maximum=1, minimum=0):
         result = random.randint(minimum, maximum)
-        result = result.replace("69", "nice")
-        result = result.replace("420", "weed")
         await ctx.send(f"Result: {result}")
 
 
